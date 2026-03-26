@@ -15,14 +15,15 @@ CONFIG_FILE = "hybrid_sub_config.json"
 class HybridSubtitleApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Hybrid AI Subtitle Master v1.0 (The Final Success)")
-        self.root.geometry("650x800")
+        self.root.title("Hybrid AI Subtitle Master v1.0")
+        self.root.geometry("650x850")
         self.root.configure(bg="#1e272e")
 
         self.is_running = False
         self.provider_type = "Unknown"
         self.file_path = ""
 
+        # --- UI ---
         tk.Label(root, text="HYBRID AI TRANSLATOR", bg="#1e272e", fg="#00d8d6", font=("Arial", 16, "bold")).pack(pady=15)
 
         tk.Label(root, text="Paste your API Key here (Auto-Detects Provider):", bg="#1e272e", fg="#d2dae2").pack(pady=(5, 0))
@@ -45,8 +46,7 @@ class HybridSubtitleApp:
         self.model_var = tk.StringVar()
         tk.Entry(self.adv_frame, textvariable=self.model_var, width=50, bg="#1e272e", fg="white").grid(row=1, column=1, padx=10, pady=2)
 
-        self.btn_file = tk.Button(root, text="📂 Select English SRT File", command=self.open_file, bg="#0fb9b1", fg="white", font=("Arial", 10, "bold"), width=30)
-        self.btn_file.pack(pady=10)
+        tk.Button(root, text="📂 Select English SRT File", command=self.open_file, bg="#0fb9b1", fg="white", font=("Arial", 10, "bold"), width=30).pack(pady=10)
         self.lbl_status_file = tk.Label(root, text="No file selected", bg="#1e272e", fg="#808e9b")
         self.lbl_status_file.pack()
 
@@ -142,7 +142,7 @@ class HybridSubtitleApp:
 
     def reset_all(self):
         if self.is_running:
-            messagebox.showwarning("Warning", "Please STOP first.")
+            messagebox.showwarning("Warning", "Please STOP the translation first.")
             return
         self.api_var.set(""); self.base_url_var.set(""); self.model_var.set("")
         self.file_path = ""; self.lbl_status_file.config(text="No file selected", fg="#808e9b")
@@ -180,7 +180,7 @@ class HybridSubtitleApp:
             total_chunks = (len(raw_blocks) // c_size) + 1
             
             self.log(f"Hybrid Mode: AI + Google Translate")
-            self.log(f"Total Blocks: {len(raw_blocks)} | Chunks: {total_chunks}")
+            self.log(f"Total Blocks: {len(raw_blocks)} | Total Chunks: {total_chunks}")
 
             for i in range((start_chunk-1)*c_size, len(raw_blocks), c_size):
                 if not self.is_running: break
@@ -192,7 +192,7 @@ class HybridSubtitleApp:
                     lines = b.split('\n')
                     text_payload += f"ID_{j}:: {' '.join(lines[2:])}\n"
                 
-                prompt = f"""Simplify English subtitles.
+                prompt = f"""You are an English subtitle simplifier.
 1. Rewrite into simple plain English. Remove slang.
 2. Identify names (people/places). Replace with [N1], [N2].
 3. Provide Sinhala transliteration for names.
@@ -255,4 +255,6 @@ Output: ID_X::[Simplified Text] ||| [N1]=SinhalaName1
             self.btn_start.config(state="normal"); self.btn_reset.config(state="normal"); self.btn_stop.config(state="disabled", text="STOP")
 
 if __name__ == "__main__":
-    root = tk.Tk(); app = HybridSubtitleApp(root); root.mainloop()
+    root = tk.Tk()
+    app = HybridSubtitleApp(root)
+    root.mainloop()
