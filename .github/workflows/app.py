@@ -142,7 +142,7 @@ class HybridSubtitleApp:
 
     def reset_all(self):
         if self.is_running:
-            messagebox.showwarning("Warning", "Please STOP the translation first.")
+            messagebox.showwarning("Warning", "Please STOP first.")
             return
         self.api_var.set(""); self.base_url_var.set(""); self.model_var.set("")
         self.file_path = ""; self.lbl_status_file.config(text="No file selected", fg="#808e9b")
@@ -180,7 +180,7 @@ class HybridSubtitleApp:
             total_chunks = (len(raw_blocks) // c_size) + 1
             
             self.log(f"Hybrid Mode: AI + Google Translate")
-            self.log(f"Total Blocks: {len(raw_blocks)} | Total Chunks: {total_chunks}")
+            self.log(f"Total Blocks: {len(raw_blocks)} | Chunks: {total_chunks}")
 
             for i in range((start_chunk-1)*c_size, len(raw_blocks), c_size):
                 if not self.is_running: break
@@ -192,7 +192,7 @@ class HybridSubtitleApp:
                     lines = b.split('\n')
                     text_payload += f"ID_{j}:: {' '.join(lines[2:])}\n"
                 
-                prompt = f"""You are an English subtitle simplifier.
+                prompt = f"""Simplify English subtitles.
 1. Rewrite into simple plain English. Remove slang.
 2. Identify names (people/places). Replace with [N1], [N2].
 3. Provide Sinhala transliteration for names.
@@ -255,6 +255,4 @@ Output: ID_X::[Simplified Text] ||| [N1]=SinhalaName1
             self.btn_start.config(state="normal"); self.btn_reset.config(state="normal"); self.btn_stop.config(state="disabled", text="STOP")
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    app = HybridSubtitleApp(root)
-    root.mainloop()
+    root = tk.Tk(); app = HybridSubtitleApp(root); root.mainloop()
