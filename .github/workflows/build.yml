@@ -1,0 +1,28 @@
+name: Build Hybrid Subtitle Master
+on: [push]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install All Dependencies
+      run: |
+        pip install pyinstaller google-generativeai openai requests deep-translator
+
+    - name: Build Windows EXE
+      run: |
+        pyinstaller --onefile --noconsole app.py
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Hybrid_AI_Subtitle_Master
+        path: dist/app.exe
